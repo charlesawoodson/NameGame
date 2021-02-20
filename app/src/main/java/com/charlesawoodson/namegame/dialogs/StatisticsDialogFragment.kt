@@ -20,19 +20,18 @@ class StatisticsDialogFragment : BaseDialogFragment() {
         isCancelable = false
 
         viewModel.selectSubscribe(GameState::correctCount) {
-            correctCount.text = "Correct Count: $it"
+            correctCount.text = getString(R.string.correct_count, it)
         }
 
         viewModel.selectSubscribe(GameState::incorrectCount) {
-            incorrectCount.text = "Incorrect Count: $it"
+            incorrectCount.text = getString(R.string.incorrect_count, it)
         }
 
         viewModel.selectSubscribe(GameState::totalTime, GameState::roundCount) { total, count ->
-            val nanosToSeconds = (total.toDouble() / 1_000_000_000)
-            averageTime.text =
-                String.format("Average Time: %.2f", nanosToSeconds / count.toDouble())
+            val averageSecondsPerRound = ((total.toDouble() / 1_000_000_000) / count.toDouble())
+            averageTime.text = getString(R.string.average_time, averageSecondsPerRound)
 
-            roundCount.text = "Rounds Played: $count"
+            roundCount.text = getString(R.string.rounds_played, count)
         }
     }
 
@@ -46,7 +45,6 @@ class StatisticsDialogFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // requireDialog().window?.setWindowAnimations(R.style.DialogAnimation)
 
         startRoundButton.setOnClickListener {
             viewModel.startRound()

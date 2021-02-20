@@ -22,7 +22,7 @@ class GameViewModel(initialState: GameState, willowTreeApi: WillowTreeService) :
     BaseMvRxViewModel<GameState>(initialState, true) {
 
     private val availableProfiles = mutableSetOf<Profile>()
-    var answerId: String = ""
+    private var answerId: String = ""
 
     init {
         getProfiles(willowTreeApi)
@@ -52,13 +52,22 @@ class GameViewModel(initialState: GameState, willowTreeApi: WillowTreeService) :
     }
 
     fun startRound() {
-        val profilesForRound = mutableListOf<Profile>()
-        for (i in 0 until 6) {
-            profilesForRound.add(availableProfiles.random())
+        val picks = mutableListOf<Profile>()
+
+        val pickFrom = mutableSetOf<Profile>().apply {
+            addAll(availableProfiles)
         }
 
-        val correctProfile = profilesForRound.random()
-        availableProfiles.remove(correctProfile)
+        for (i in 0 until pickFrom.size.coerceAtMost(6)) {
+            pickFrom.random().also {
+                pickFrom.remove(it)
+                picks.add(it)
+            }
+        }
+
+        val correctProfile = picks.random().also {
+            availableProfiles.remove(it)
+        }
 
         val displayName = "${correctProfile.firstName} ${correctProfile.lastName}"
 
@@ -68,50 +77,41 @@ class GameViewModel(initialState: GameState, willowTreeApi: WillowTreeService) :
 
         setState {
             copy(
-                profilesPerRound = profilesForRound,
+                profilesPerRound = picks,
                 displayName = displayName,
                 roundStartTime = roundStartTime
             )
         }
     }
 
-    fun incrementRound() {
+    fun correctAnswer() {
+        val elapsedTime = System.nanoTime()
         setState {
-            copy(roundCount = roundCount.plus(1))
+            copy(
+                roundCount = roundCount.plus(1),
+                correctCount = correctCount.plus(1),
+                totalTime = totalTime.plus(elapsedTime - roundStartTime)
+            )
         }
     }
 
-    fun incrementCorrect() {
+    fun wrongAnswer(position: Int) {
         setState {
-            copy(correctCount = correctCount.plus(1))
+            copy(
+                profilesPerRound = profilesPerRound.removeItem(position),
+                incorrectCount = incorrectCount.plus(1)
+            )
         }
     }
 
-    fun incrementIncorrect() {
-        setState {
-            copy(incorrectCount = incorrectCount.plus(1))
-        }
-    }
-
-    fun calculateTotalTime() {
-        val elapsed = System.nanoTime()
-        setState {
-            copy(totalTime = totalTime.plus(elapsed - roundStartTime))
-        }
-    }
-
-    fun removeProfile(position: Int) {
-        setState {
-            copy(profilesPerRound = profilesPerRound.removeItem(position))
-        }
-    }
+    fun getAnswerId() = answerId
 
     companion object : MvRxViewModelFactory<GameViewModel, GameState> {
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: GameState): GameViewModel {
             return GameViewModel(
                 state,
-                WillowTreeServiceFactory.willowTreeApi // todo: get with dagger
+                WillowTreeServiceFactory.willowTreeApi // todo: get with dagger repo pattern
             )
         }
     }

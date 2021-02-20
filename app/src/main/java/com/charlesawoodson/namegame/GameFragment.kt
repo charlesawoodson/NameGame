@@ -65,14 +65,11 @@ class GameFragment : BaseFragment(), ProfileAdapter.OnProfileItemClickListener {
     }
 
     override fun onProfileItemClicked(profileId: String, position: Int) {
-        if (profileId == viewModel.answerId) {
-            viewModel.incrementCorrect()
-            viewModel.incrementRound()
-            viewModel.calculateTotalTime()
+        if (profileId == viewModel.getAnswerId()) {
+            viewModel.correctAnswer()
             StatisticsDialogFragment().show(childFragmentManager, null)
         } else {
-            viewModel.incrementIncorrect()
-            viewModel.removeProfile(position)
+            viewModel.wrongAnswer(position)
         }
     }
 }
