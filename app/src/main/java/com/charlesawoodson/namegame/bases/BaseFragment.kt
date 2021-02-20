@@ -1,4 +1,4 @@
-package com.charlesawoodson.namegame
+package com.charlesawoodson.namegame.bases
 
 import com.airbnb.mvrx.BaseMvRxFragment
 

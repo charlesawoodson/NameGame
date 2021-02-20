@@ -1,4 +1,4 @@
-package com.charlesawoodson.namegame.api
+package com.charlesawoodson.namegame.api.model
 
 import com.squareup.moshi.JsonClass
 
