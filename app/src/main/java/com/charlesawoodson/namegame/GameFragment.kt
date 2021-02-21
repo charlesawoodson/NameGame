@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -22,9 +23,11 @@ import kotlinx.android.synthetic.main.fragment_game.*
 
 class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
-    private val viewModel: GameViewModel by fragmentViewModel()
+    private val sharedPreferences by lazy(mode = LazyThreadSafetyMode.NONE) {
+        PreferenceManager.getDefaultSharedPreferences(requireActivity())
+    }
 
-    private var reverseMode = true
+    private val viewModel: GameViewModel by fragmentViewModel()
 
     private val adapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProfileAdapter(this)
@@ -55,17 +58,19 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
                     .circleCrop()
                     .into(profileImageView)
 
-                profileImageView.isVisible = reverseMode
+                profileImageView.isVisible =
+                    sharedPreferences.getBoolean(getString(R.string.reverse_mode_pref), false)
             }
         }
 
         viewModel.selectSubscribe(GameState::displayName) {
             nameTextView.text = it
-            nameTextView.isGone = reverseMode
+            nameTextView.isGone =
+                sharedPreferences.getBoolean(getString(R.string.reverse_mode_pref), false)
         }
 
         viewModel.selectSubscribe(GameState::profilesPerRound) { profiles ->
-            if (reverseMode) {
+            if (sharedPreferences.getBoolean(getString(R.string.reverse_mode_pref), false)) {
                 reverseModeAdapter.updateData(profiles)
             } else {
                 adapter.updateData(profiles)
@@ -94,7 +99,11 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         profilesRecyclerView.layoutManager =
             GridLayoutManager(context, 2, orientation, false)
 
-        profilesRecyclerView.adapter = if (reverseMode) reverseModeAdapter else adapter
+        profilesRecyclerView.adapter = if (sharedPreferences.getBoolean(
+                getString(R.string.reverse_mode_pref),
+                false
+            )
+        ) reverseModeAdapter else adapter
     }
 
     override fun onProfileItemClicked(profileId: String, position: Int) {

@@ -5,4 +5,19 @@
     <string name="correct_count">Correct Count: %1$d</string>
     <string name="incorrect_count">Incorrect Count: %1$d</string>
     <string name="average_time">Average Time: %.02f</string>
+
+    <string name="general">general</string>
+    <string name="check_us_out">Check Us Out</string>
+
+    <string name="matt_mode_pref">matt-mode-pref</string>
+    <string name="matt_mode_title">Matt Mode</string>
+    <string name="matt_mode_summary">Only select profiles from the names \"Matt\" and \"Matthew\"</string>
+
+    <string name="reverse_mode_pref">reverse-mode-pref</string>
+    <string name="reverse_mode_title">Reverse Mode</string>
+    <string name="reverse_mode_summary">Guess profile image from the list of names displayed</string>
+    <string name="settings">Settings</string>
+    <string name="settings_activity">Settings Activity</string>
+    <string name="begin_game">Begin Game</string>
+
 </resources>
