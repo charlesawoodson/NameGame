@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.mvrx.*
+import com.airbnb.mvrx.Loading
+import com.airbnb.mvrx.fragmentViewModel
 import com.charlesawoodson.namegame.adapters.ProfileAdapter
 import com.charlesawoodson.namegame.bases.BaseFragment
 import com.charlesawoodson.namegame.dialogs.StatisticsDialogFragment

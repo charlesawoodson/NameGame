@@ -1,10 +1,10 @@
 package com.charlesawoodson.namegame
 
 import com.airbnb.mvrx.*
-import com.charlesawoodson.namegame.api.WillowTreeService
-import com.charlesawoodson.namegame.api.WillowTreeServiceFactory
+import com.charlesawoodson.namegame.api.WillowTreeApiFactory
 import com.charlesawoodson.namegame.api.model.Profile
 import com.charlesawoodson.namegame.extensions.removeItem
+import com.charlesawoodson.namegame.repositories.WillowTreeRepository
 import io.reactivex.schedulers.Schedulers
 
 data class GameState(
@@ -18,22 +18,22 @@ data class GameState(
     val roundStartTime: Long = 0L
 ) : MvRxState
 
-class GameViewModel(initialState: GameState, willowTreeApi: WillowTreeService) :
+class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRepository) :
     BaseMvRxViewModel<GameState>(initialState, true) {
 
     private val availableProfiles = mutableSetOf<Profile>()
     private var answerId: String = ""
 
     init {
-        getProfiles(willowTreeApi)
+        getProfiles(willowTreeRepository)
 
         asyncSubscribe(GameState::profiles) { profiles ->
             availableProfiles.addAll(profiles)
         }
     }
 
-    private fun getProfiles(willowTreeApi: WillowTreeService) {
-        willowTreeApi.getProfiles()
+    private fun getProfiles(willowTreeRepository: WillowTreeRepository) {
+        willowTreeRepository.getProfiles()
             .subscribeOn(Schedulers.io())
             .subscribe(this::handleResponse, this::handleError)
             .disposeOnClear()
@@ -111,7 +111,7 @@ class GameViewModel(initialState: GameState, willowTreeApi: WillowTreeService) :
         override fun create(viewModelContext: ViewModelContext, state: GameState): GameViewModel {
             return GameViewModel(
                 state,
-                WillowTreeServiceFactory.willowTreeApi // todo: get with dagger repo pattern
+                WillowTreeRepository(WillowTreeApiFactory.willowTreeApi) // todo dagger
             )
         }
     }

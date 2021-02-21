@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-object WillowTreeServiceFactory {
+object WillowTreeApiFactory {
 
     private const val BASE_URL = "https://willowtreeapps.com"
 
@@ -14,6 +14,6 @@ object WillowTreeServiceFactory {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
-    val willowTreeApi: WillowTreeService = retrofit().create(WillowTreeService::class.java)
+    val willowTreeApi: WillowTreeApi = retrofit().create(WillowTreeApi::class.java)
 
 }
