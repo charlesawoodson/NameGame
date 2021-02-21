@@ -22,7 +22,7 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/nameTextView"
+        app:layout_constraintBottom_toTopOf="@+id/viewContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,19 +31,39 @@
         tools:itemCount="6"
         tools:listitem="@layout/list_item_profile" />
 
-    <TextView
-        android:id="@+id/nameTextView"
+    <FrameLayout
+        android:id="@+id/viewContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="casual"
-        android:textSize="@dimen/subhead3"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilesRecyclerView"
-        tools:text="Charles Woodson" />
+        app:layout_constraintTop_toBottomOf="@+id/profilesRecyclerView">
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:textSize="@dimen/subhead3"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Charles Woodson"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="@dimen/row14"
+            android:layout_height="@dimen/row14"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:visibility="gone"
+            tools:srcCompat="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
 
     <ProgressBar
         android:id="@+id/progressBar"

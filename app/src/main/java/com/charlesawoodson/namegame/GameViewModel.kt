@@ -11,6 +11,7 @@ data class GameState(
     val profiles: Async<List<Profile>> = Loading(),
     val profilesPerRound: List<Profile> = emptyList(),
     val displayName: String = "Loading Data...",
+    val displayImageUrl: String = "",
     val roundCount: Int = 0,
     val correctCount: Int = 0,
     val incorrectCount: Int = 0,
@@ -70,6 +71,7 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
         }
 
         val displayName = "${correctProfile.firstName} ${correctProfile.lastName}"
+        val displayUrl = correctProfile.headshot.url
 
         answerId = correctProfile.id
 
@@ -79,7 +81,8 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
             copy(
                 profilesPerRound = picks,
                 displayName = displayName,
-                roundStartTime = roundStartTime
+                roundStartTime = roundStartTime,
+                displayImageUrl = displayUrl
             )
         }
     }

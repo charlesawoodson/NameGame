@@ -5,34 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
 import com.charlesawoodson.namegame.R
 import com.charlesawoodson.namegame.api.model.Profile
-import kotlinx.android.synthetic.main.list_item_profile.view.*
+import kotlinx.android.synthetic.main.list_item_reverse_mode.view.*
 
-class ProfileAdapter(private val listener: OnProfileItemClickListener) :
-    RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
+class ReverseModeAdapter(private val listener: OnProfileItemClickListener) :
+    RecyclerView.Adapter<ReverseModeAdapter.ViewHolder>() {
 
     private val data = ArrayList<Profile>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item_profile, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_item_reverse_mode, parent, false)
         return ViewHolder(view, data, listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val circularProgressDrawable = CircularProgressDrawable(holder.context)
-        circularProgressDrawable.start()
-
-        Glide.with(holder.context)
-            .load("http:" + data[position].headshot.url)
-            .placeholder(circularProgressDrawable)
-            .circleCrop()
-            .into(holder.profileImageView)
+        holder.profileTextView.text = "${data[position].firstName} ${data[position].lastName}"
     }
 
     override fun getItemCount(): Int = data.size
@@ -42,9 +35,7 @@ class ProfileAdapter(private val listener: OnProfileItemClickListener) :
         data: ArrayList<Profile>,
         listener: OnProfileItemClickListener
     ) : RecyclerView.ViewHolder(view) {
-
-        val context: Context = itemView.context
-        val profileImageView: ImageView = itemView.profileImageView
+        val profileTextView: TextView = itemView.profileTextView
 
         init {
             itemView.setOnClickListener {
