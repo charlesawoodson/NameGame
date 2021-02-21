@@ -13,44 +13,15 @@
             app:summary="@string/reverse_mode_summary"
             app:title="@string/reverse_mode_title" />
 
+        <SwitchPreferenceCompat
+            app:key="@string/hint_mode_pref"
+            app:summary="@string/hint_mode_summary"
+            app:title="@string/hint_mode_title" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/challenge_mode_pref"
+            app:summary="@string/challenge_mode_summary"
+            app:title="@string/challenge_mode_title" />
+
     </PreferenceCategory>
-
-    <!--    <PreferenceCategory app:title="@string/general">-->
-
-    <!--        <Preference app:title="Report a Problem">-->
-    <!--            <intent-->
-    <!--                android:action="android.intent.action.VIEW"-->
-    <!--                android:data="mailto:charlesawoodson@gmail.com" />-->
-    <!--        </Preference>-->
-
-    <!--    </PreferenceCategory>-->
-
-    <!--    <PreferenceCategory app:title="@string/check_us_out">-->
-
-    <!--        <Preference-->
-    <!--            android:icon="@mipmap/ic_launcher_round"-->
-    <!--            app:title="Facebook">-->
-    <!--            <intent-->
-    <!--                android:action="android.intent.action.VIEW"-->
-    <!--                android:data="http://www.facebook.com/letsroolet" />-->
-    <!--        </Preference>-->
-
-    <!--        <Preference-->
-    <!--            android:icon="@mipmap/ic_launcher_round"-->
-    <!--            app:title="Twitter">-->
-    <!--            <intent-->
-    <!--                android:action="android.intent.action.VIEW"-->
-    <!--                android:data="http://www.twitter.com/letsroolet" />-->
-    <!--        </Preference>-->
-
-    <!--        <Preference-->
-    <!--            android:icon="@mipmap/ic_launcher_round"-->
-    <!--            app:title="Instagram">-->
-    <!--            <intent-->
-    <!--                android:action="android.intent.action.VIEW"-->
-    <!--                android:data="http://www.instagram.com/letsroolet" />-->
-    <!--        </Preference>-->
-
-    <!--    </PreferenceCategory>-->
-
 </PreferenceScreen>

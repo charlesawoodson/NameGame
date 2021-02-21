@@ -21,7 +21,6 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
         }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         beginGame.setOnClickListener {
             Intent(applicationContext, MainActivity::class.java).apply {

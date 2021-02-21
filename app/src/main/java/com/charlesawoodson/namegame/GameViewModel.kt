@@ -23,6 +23,7 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
     BaseMvRxViewModel<GameState>(initialState, true) {
 
     private val availableProfiles = mutableSetOf<Profile>()
+    private val mattModeProfiles = mutableSetOf<Profile>()
     private var answerId: String = ""
 
     init {
@@ -30,6 +31,7 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
 
         asyncSubscribe(GameState::profiles) { profiles ->
             availableProfiles.addAll(profiles)
+            mattModeProfiles.addAll(profiles.filter { it.firstName == "Matt" || it.firstName == "Matthew" })
         }
     }
 
@@ -52,14 +54,16 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
         }
     }
 
-    fun startRound() {
+    fun startRound(mattMode: Boolean, challengeMode: Boolean) {
+        val maxItems = if (challengeMode) PICK_SIZE * 2 else PICK_SIZE
+
         val picks = mutableListOf<Profile>()
 
         val pickFrom = mutableSetOf<Profile>().apply {
-            addAll(availableProfiles)
+            addAll(if (mattMode) mattModeProfiles else availableProfiles)
         }
 
-        for (i in 0 until pickFrom.size.coerceAtMost(6)) {
+        for (i in 0 until pickFrom.size.coerceAtMost(maxItems)) {
             pickFrom.random().also {
                 pickFrom.remove(it)
                 picks.add(it)
@@ -67,7 +71,7 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
         }
 
         val correctProfile = picks.random().also {
-            availableProfiles.remove(it)
+            if (mattMode) mattModeProfiles.remove(it) else availableProfiles.remove(it)
         }
 
         val displayName = "${correctProfile.firstName} ${correctProfile.lastName}"
@@ -109,7 +113,11 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
 
     fun getAnswerId() = answerId
 
+
     companion object : MvRxViewModelFactory<GameViewModel, GameState> {
+
+        private const val PICK_SIZE = 6
+
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: GameState): GameViewModel {
             return GameViewModel(
@@ -118,5 +126,4 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
             )
         }
     }
-
 }

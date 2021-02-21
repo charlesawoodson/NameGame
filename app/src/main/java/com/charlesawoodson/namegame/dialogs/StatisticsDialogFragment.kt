@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import com.airbnb.mvrx.parentFragmentViewModel
 import com.charlesawoodson.namegame.GameState
 import com.charlesawoodson.namegame.GameViewModel
@@ -12,6 +13,10 @@ import com.charlesawoodson.namegame.bases.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_statistics_dialog.*
 
 class StatisticsDialogFragment : BaseDialogFragment() {
+
+    private val sharedPreferences by lazy(mode = LazyThreadSafetyMode.NONE) {
+        PreferenceManager.getDefaultSharedPreferences(requireActivity())
+    }
 
     private val viewModel: GameViewModel by parentFragmentViewModel()
 
@@ -46,8 +51,20 @@ class StatisticsDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val mattMode = sharedPreferences.getBoolean(
+            getString(R.string.matt_mode_pref),
+            false
+        )
+
         startRoundButton.setOnClickListener {
-            viewModel.startRound()
+            viewModel.startRound(
+                mattMode,
+                sharedPreferences.getBoolean(
+                    getString(R.string.challenge_mode_pref),
+                    false
+                )
+            )
+
             dismiss()
         }
     }
