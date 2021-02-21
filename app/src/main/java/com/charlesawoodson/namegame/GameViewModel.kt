@@ -1,5 +1,6 @@
 package com.charlesawoodson.namegame
 
+import androidx.preference.PreferenceManager
 import com.airbnb.mvrx.*
 import com.charlesawoodson.namegame.api.WillowTreeApiFactory
 import com.charlesawoodson.namegame.api.model.Profile
@@ -16,22 +17,30 @@ data class GameState(
     val correctCount: Int = 0,
     val incorrectCount: Int = 0,
     val totalTime: Long = 0L,
-    val roundStartTime: Long = 0L
+    val roundStartTime: Long = 0L,
+    val hasAvailableProfiles: Boolean = true
 ) : MvRxState
 
-class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRepository) :
+class GameViewModel(
+    initialState: GameState,
+    willowTreeRepository: WillowTreeRepository,
+    private val mattMode: Boolean,
+    private val challengeMode: Boolean
+) :
     BaseMvRxViewModel<GameState>(initialState, true) {
 
     private val availableProfiles = mutableSetOf<Profile>()
-    private val mattModeProfiles = mutableSetOf<Profile>()
     private var answerId: String = ""
 
     init {
         getProfiles(willowTreeRepository)
 
         asyncSubscribe(GameState::profiles) { profiles ->
-            availableProfiles.addAll(profiles)
-            mattModeProfiles.addAll(profiles.filter { it.firstName == "Matt" || it.firstName == "Matthew" })
+            if (mattMode)
+                availableProfiles.addAll(profiles.filter { it.firstName == "Matt" || it.firstName == "Matthew" })
+            else {
+                availableProfiles.addAll(profiles)
+            }
         }
     }
 
@@ -54,14 +63,14 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
         }
     }
 
-    fun startRound(mattMode: Boolean, challengeMode: Boolean) {
+    fun startRound() {
         val maxItems = if (challengeMode) PICK_SIZE * 2 else PICK_SIZE
 
-        val picks = mutableListOf<Profile>()
-
         val pickFrom = mutableSetOf<Profile>().apply {
-            addAll(if (mattMode) mattModeProfiles else availableProfiles)
+            addAll(availableProfiles)
         }
+
+        val picks = mutableListOf<Profile>()
 
         for (i in 0 until pickFrom.size.coerceAtMost(maxItems)) {
             pickFrom.random().also {
@@ -71,7 +80,7 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
         }
 
         val correctProfile = picks.random().also {
-            if (mattMode) mattModeProfiles.remove(it) else availableProfiles.remove(it)
+            availableProfiles.remove(it)
         }
 
         val displayName = "${correctProfile.firstName} ${correctProfile.lastName}"
@@ -97,7 +106,8 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
             copy(
                 roundCount = roundCount.plus(1),
                 correctCount = correctCount.plus(1),
-                totalTime = totalTime.plus(elapsedTime - roundStartTime)
+                totalTime = totalTime.plus(elapsedTime - roundStartTime),
+                hasAvailableProfiles = availableProfiles.size > 0
             )
         }
     }
@@ -113,6 +123,7 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
 
     fun getAnswerId() = answerId
 
+    fun getAvailableSize() = availableProfiles.size
 
     companion object : MvRxViewModelFactory<GameViewModel, GameState> {
 
@@ -120,9 +131,20 @@ class GameViewModel(initialState: GameState, willowTreeRepository: WillowTreeRep
 
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: GameState): GameViewModel {
+
+            val context = viewModelContext.activity
+
+            val mattMode = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.matt_mode_pref), false)
+
+            val challengeMode = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.challenge_mode_pref), false)
+
             return GameViewModel(
                 state,
-                WillowTreeRepository(WillowTreeApiFactory.willowTreeApi) // todo dagger
+                WillowTreeRepository(WillowTreeApiFactory.willowTreeApi), // todo dagger
+                mattMode,
+                challengeMode
             )
         }
     }

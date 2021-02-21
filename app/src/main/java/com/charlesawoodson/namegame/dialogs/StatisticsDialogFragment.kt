@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.preference.PreferenceManager
 import com.airbnb.mvrx.parentFragmentViewModel
 import com.charlesawoodson.namegame.GameState
@@ -13,10 +14,6 @@ import com.charlesawoodson.namegame.bases.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_statistics_dialog.*
 
 class StatisticsDialogFragment : BaseDialogFragment() {
-
-    private val sharedPreferences by lazy(mode = LazyThreadSafetyMode.NONE) {
-        PreferenceManager.getDefaultSharedPreferences(requireActivity())
-    }
 
     private val viewModel: GameViewModel by parentFragmentViewModel()
 
@@ -38,6 +35,15 @@ class StatisticsDialogFragment : BaseDialogFragment() {
 
             roundCount.text = getString(R.string.rounds_played, count)
         }
+
+        viewModel.selectSubscribe(GameState::hasAvailableProfiles) { hasProfiles ->
+            if (hasProfiles) {
+                startRoundButton.text = getString(R.string.start_round)
+            } else {
+                startRoundButton.text = getString(R.string.end_game)
+            }
+            youWonTextView.isGone = hasProfiles
+        }
     }
 
     override fun onCreateView(
@@ -51,20 +57,12 @@ class StatisticsDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mattMode = sharedPreferences.getBoolean(
-            getString(R.string.matt_mode_pref),
-            false
-        )
-
         startRoundButton.setOnClickListener {
-            viewModel.startRound(
-                mattMode,
-                sharedPreferences.getBoolean(
-                    getString(R.string.challenge_mode_pref),
-                    false
-                )
-            )
-
+            if (viewModel.getAvailableSize() > 0) {
+                viewModel.startRound()
+            } else {
+                requireActivity().onBackPressed()
+            }
             dismiss()
         }
     }
