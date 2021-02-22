@@ -1,5 +1,6 @@
 package com.charlesawoodson.namegame.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,10 @@ class ReverseModeAdapter(private val listener: OnProfileItemClickListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.profileTextView.text = "${data[position].firstName} ${data[position].lastName}"
+        data[position].also { profile ->
+            holder.profileTextView.text =
+                holder.context.getString(R.string.answer_name, profile.firstName, profile.lastName)
+        }
     }
 
     override fun getItemCount(): Int = data.size
@@ -33,6 +37,7 @@ class ReverseModeAdapter(private val listener: OnProfileItemClickListener) :
         data: ArrayList<Profile>,
         listener: OnProfileItemClickListener
     ) : RecyclerView.ViewHolder(view) {
+        val context: Context = itemView.context
         val profileTextView: TextView = itemView.profileTextView
 
         init {

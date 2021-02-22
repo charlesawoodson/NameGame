@@ -41,7 +41,7 @@ class GameViewModel(
 
         asyncSubscribe(GameState::profiles) { profiles ->
             if (mattMode)
-                availableProfiles.addAll(profiles.filter { it.firstName == "Matt" || it.firstName == "Matthew" })
+                availableProfiles.addAll(profiles.filter { it.firstName == MATT_NAME || it.firstName == MATTHEW_NAME })
             else {
                 availableProfiles.addAll(profiles)
             }
@@ -109,6 +109,7 @@ class GameViewModel(
         val roundStartTime = System.nanoTime()
 
         if (hintMode) {
+            task.cancel()
             task = Timer()
             removeRandomIncorrectItem(correctProfile)
         }
@@ -140,7 +141,7 @@ class GameViewModel(
                     task.cancel()
                 }
             }
-        }, 3000, 3000)
+        }, HINT_MODE_DELAY, HINT_MODE_DELAY)
     }
 
     fun correctAnswer() {
@@ -164,11 +165,6 @@ class GameViewModel(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-
-    }
-
     fun getAvailableSize() = availableProfiles.size
 
     fun isReverseMode() = reverseMode
@@ -179,6 +175,9 @@ class GameViewModel(
 
         private const val PICK_SIZE = 6
         private const val CHALLENGE_MODE_MULTIPLE = 2
+        private const val HINT_MODE_DELAY = 2000L
+        private const val MATT_NAME = "Matt"
+        private const val MATTHEW_NAME = "Matthew"
 
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: GameState): GameViewModel {
