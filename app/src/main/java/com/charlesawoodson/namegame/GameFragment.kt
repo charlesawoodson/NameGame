@@ -37,6 +37,7 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
         viewModel.selectSubscribe(GameState::profiles) { profiles ->
             progressBar.isVisible = (profiles is Loading)
+            loadingMessageTextView.isVisible = (profiles is Loading)
             if (profiles is Loading) {
                 StatisticsDialogFragment().show(childFragmentManager, null)
             }
@@ -72,8 +73,10 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         }
 
         viewModel.selectSubscribe(GameState::errorLoading) { errorLoading ->
-            if (errorLoading) errorTextView.setText(R.string.error_loading_data)
-            errorTextView.isVisible = errorLoading
+            if (errorLoading) {
+                loadingMessageTextView.setText(R.string.error_loading_data)
+                loadingMessageTextView.isVisible = errorLoading
+            }
         }
     }
 

@@ -7,19 +7,19 @@
     android:animateLayoutChanges="true">
 
     <TextView
-        android:id="@+id/errorTextView"
+        android:id="@+id/loadingMessageTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/row02"
         android:layout_marginEnd="@dimen/row02"
         android:gravity="center"
+        android:text="@string/loading_data"
         android:textSize="@dimen/caption12"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Error Loading" />
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profilesRecyclerView"

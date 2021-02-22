@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
+import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.parentFragmentViewModel
 import com.charlesawoodson.namegame.GameState
 import com.charlesawoodson.namegame.GameViewModel
@@ -44,6 +45,10 @@ class StatisticsDialogFragment : BaseDialogFragment() {
             youWonTextView.isGone = hasProfiles
         }
 
+        viewModel.selectSubscribe(GameState::profiles) { profiles ->
+            startRoundButton.isClickable = profiles is Success
+        }
+
         viewModel.selectSubscribe(GameState::errorLoading) { errorLoading ->
             if (errorLoading) {
                 dismiss()
@@ -66,7 +71,6 @@ class StatisticsDialogFragment : BaseDialogFragment() {
             if (viewModel.getAvailableSize() > 0) {
                 viewModel.startRound()
             } else {
-                // todo: if error loading data == true, dismiss rather than exiting
                 requireActivity().onBackPressed()
             }
             dismiss()
