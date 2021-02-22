@@ -11,14 +11,15 @@ import io.reactivex.schedulers.Schedulers
 data class GameState(
     val profiles: Async<List<Profile>> = Loading(),
     val profilesPerRound: List<Profile> = emptyList(),
-    val displayName: String = "Loading Data...",
+    val displayName: String = "",
     val displayImageUrl: String = "",
     val roundCount: Int = 0,
     val correctCount: Int = 0,
     val incorrectCount: Int = 0,
     val totalTime: Long = 0L,
     val roundStartTime: Long = 0L,
-    val hasAvailableProfiles: Boolean = true
+    val hasAvailableProfiles: Boolean = true,
+    val errorLoading: Boolean = false
 ) : MvRxState
 
 class GameViewModel(
@@ -53,13 +54,13 @@ class GameViewModel(
 
     private fun handleResponse(profiles: List<Profile>) {
         setState {
-            copy(profiles = Success(profiles))
+            copy(profiles = Success(profiles), errorLoading = false)
         }
     }
 
     private fun handleError(error: Throwable) {
         setState {
-            copy(profiles = Fail(error))
+            copy(profiles = Fail(error), errorLoading = true)
         }
     }
 

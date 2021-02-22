@@ -40,6 +40,11 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel.selectSubscribe(GameState::errorLoading) { errorLoading ->
+            if (errorLoading) errorTextView.setText(R.string.error_loading_data)
+            errorTextView.isVisible = errorLoading
+        }
+
         viewModel.selectSubscribe(GameState::profiles) { profiles ->
             progressBar.isVisible = (profiles is Loading)
             if (profiles is Loading) {

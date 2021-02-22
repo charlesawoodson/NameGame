@@ -28,5 +28,6 @@
     <string name="begin_game">Begin Game</string>
     <string name="end_game">End Game</string>
     <string name="you_won">You Won!!</string>
+    <string name="error_loading_data">There was an error loading the data… check your internet then pull to refresh</string>
 
 </resources>

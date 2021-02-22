@@ -44,6 +44,12 @@ class StatisticsDialogFragment : BaseDialogFragment() {
             }
             youWonTextView.isGone = hasProfiles
         }
+
+        viewModel.selectSubscribe(GameState::errorLoading) { errorLoading ->
+            if (errorLoading) {
+                dismiss()
+            }
+        }
     }
 
     override fun onCreateView(
