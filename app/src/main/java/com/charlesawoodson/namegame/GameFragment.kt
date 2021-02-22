@@ -98,8 +98,21 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
                 RecyclerView.HORIZONTAL
             }
 
+        val spanCount =
+            when {
+                viewModel.isReverseMode() && orientation == RecyclerView.HORIZONTAL -> {
+                    3
+                }
+                !viewModel.isReverseMode() && orientation == RecyclerView.VERTICAL -> {
+                    3
+                }
+                else -> {
+                    2
+                }
+            }
+
         profilesRecyclerView.layoutManager =
-            GridLayoutManager(context, 2, orientation, false)
+            GridLayoutManager(context, spanCount, orientation, false)
 
         profilesRecyclerView.adapter =
             if (viewModel.isReverseMode()) reverseModeAdapter else adapter
