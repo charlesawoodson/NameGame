@@ -60,7 +60,9 @@ class GameViewModel(
     private fun handleResponse(profiles: List<Profile>) {
         setState {
             copy(
-                profiles = Success(profiles),
+                profiles = Success(profiles.filter {
+                    it.headshot.url != "" && it.headshot.height != 0 && it.headshot.width != 0
+                }),
                 errorLoading = false,
                 hasAvailableProfiles = Success(profiles.isNotEmpty())
             )
