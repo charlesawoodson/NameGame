@@ -1,10 +1,8 @@
 package com.charlesawoodson.namegame.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -39,7 +37,9 @@ class ReverseModeAdapter(private val listener: OnProfileItemClickListener) :
 
         init {
             itemView.setOnClickListener {
-                listener.onProfileItemClicked(data[adapterPosition].id, adapterPosition)
+                if (adapterPosition != -1) {
+                    listener.onProfileItemClicked(data[adapterPosition].id, adapterPosition)
+                }
             }
         }
     }

@@ -10,15 +10,14 @@ import io.reactivex.schedulers.Schedulers
 
 data class GameState(
     val profiles: Async<List<Profile>> = Loading(),
-    val profilesPerRound: List<Profile> = emptyList(),
-    val displayName: String = "",
-    val displayImageUrl: String = "",
+    val profilePicks: List<Profile> = emptyList(),
+    val profileAnswer: Async<Profile> = Uninitialized,
     val roundCount: Int = 0,
     val correctCount: Int = 0,
     val incorrectCount: Int = 0,
     val totalTime: Long = 0L,
     val roundStartTime: Long = 0L,
-    val hasAvailableProfiles: Boolean = true,
+    val hasAvailableProfiles: Async<Boolean> = Uninitialized,
     val errorLoading: Boolean = false
 ) : MvRxState
 
@@ -26,12 +25,14 @@ class GameViewModel(
     initialState: GameState,
     willowTreeRepository: WillowTreeRepository,
     private val mattMode: Boolean,
-    private val challengeMode: Boolean
+    private val challengeMode: Boolean,
+    private val reverseMode: Boolean,
+    private val hintMode: Boolean
 ) :
     BaseMvRxViewModel<GameState>(initialState, true) {
 
     private val availableProfiles = mutableSetOf<Profile>()
-    private var answerId: String = ""
+    private var answerId = ""
 
     init {
         getProfiles(willowTreeRepository)
@@ -42,6 +43,10 @@ class GameViewModel(
             else {
                 availableProfiles.addAll(profiles)
             }
+        }
+
+        asyncSubscribe(GameState::profileAnswer) { answer ->
+            answerId = answer.id
         }
     }
 
@@ -54,13 +59,21 @@ class GameViewModel(
 
     private fun handleResponse(profiles: List<Profile>) {
         setState {
-            copy(profiles = Success(profiles), errorLoading = false)
+            copy(
+                profiles = Success(profiles),
+                errorLoading = false,
+                hasAvailableProfiles = Success(profiles.isNotEmpty())
+            )
         }
     }
 
     private fun handleError(error: Throwable) {
         setState {
-            copy(profiles = Fail(error), errorLoading = true)
+            copy(
+                profiles = Fail(error),
+                errorLoading = true,
+                hasAvailableProfiles = Success(false)
+            )
         }
     }
 
@@ -84,19 +97,13 @@ class GameViewModel(
             availableProfiles.remove(it)
         }
 
-        val displayName = "${correctProfile.firstName} ${correctProfile.lastName}"
-        val displayUrl = correctProfile.headshot.url
-
-        answerId = correctProfile.id
-
         val roundStartTime = System.nanoTime()
 
         setState {
             copy(
-                profilesPerRound = picks,
-                displayName = displayName,
-                roundStartTime = roundStartTime,
-                displayImageUrl = displayUrl
+                profilePicks = picks,
+                profileAnswer = Success(correctProfile),
+                roundStartTime = roundStartTime
             )
         }
     }
@@ -108,7 +115,7 @@ class GameViewModel(
                 roundCount = roundCount.plus(1),
                 correctCount = correctCount.plus(1),
                 totalTime = totalTime.plus(elapsedTime - roundStartTime),
-                hasAvailableProfiles = availableProfiles.size > 0
+                hasAvailableProfiles = Success(availableProfiles.size > 0)
             )
         }
     }
@@ -116,15 +123,17 @@ class GameViewModel(
     fun wrongAnswer(position: Int) {
         setState {
             copy(
-                profilesPerRound = profilesPerRound.removeItem(position),
+                profilePicks = profilePicks.removeItem(position),
                 incorrectCount = incorrectCount.plus(1)
             )
         }
     }
 
-    fun getAnswerId() = answerId
-
     fun getAvailableSize() = availableProfiles.size
+
+    fun isReverseMode() = reverseMode
+
+    fun getAnswerId() = answerId
 
     companion object : MvRxViewModelFactory<GameViewModel, GameState> {
 
@@ -141,11 +150,19 @@ class GameViewModel(
             val challengeMode = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(context.getString(R.string.challenge_mode_pref), false)
 
+            val reverseMode = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.reverse_mode_pref), false)
+
+            val hintMode = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.hint_mode_pref), false)
+
             return GameViewModel(
                 state,
                 WillowTreeRepository(WillowTreeApiFactory.willowTreeApi), // todo dagger
                 mattMode,
-                challengeMode
+                challengeMode,
+                reverseMode,
+                hintMode
             )
         }
     }

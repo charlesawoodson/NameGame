@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
-import androidx.preference.PreferenceManager
 import com.airbnb.mvrx.parentFragmentViewModel
 import com.charlesawoodson.namegame.GameState
 import com.charlesawoodson.namegame.GameViewModel
@@ -36,7 +35,7 @@ class StatisticsDialogFragment : BaseDialogFragment() {
             roundCount.text = getString(R.string.rounds_played, count)
         }
 
-        viewModel.selectSubscribe(GameState::hasAvailableProfiles) { hasProfiles ->
+        viewModel.asyncSubscribe(GameState::hasAvailableProfiles) { hasProfiles ->
             if (hasProfiles) {
                 startRoundButton.text = getString(R.string.start_round)
             } else {
@@ -67,6 +66,7 @@ class StatisticsDialogFragment : BaseDialogFragment() {
             if (viewModel.getAvailableSize() > 0) {
                 viewModel.startRound()
             } else {
+                // todo: if error loading data == true, dismiss rather than exiting
                 requireActivity().onBackPressed()
             }
             dismiss()

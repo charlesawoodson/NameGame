@@ -6,6 +6,8 @@
     <string name="incorrect_count">Incorrect Count: %1$d</string>
     <string name="average_time">Average Time: %.02f</string>
 
+    <string name="answer_name">%1$s %2$s</string>
+
     <string name="general">General</string>
 
     <string name="matt_mode_pref">matt-mode-pref</string>

@@ -44,11 +44,13 @@ class ProfileAdapter(private val listener: OnProfileItemClickListener) :
     ) : RecyclerView.ViewHolder(view) {
 
         val context: Context = itemView.context
-        val profileImageView: ImageView = itemView.profileImageView
+        val profileImageView: ImageView = itemView.answerProfileImageView
 
         init {
             itemView.setOnClickListener {
-                listener.onProfileItemClicked(data[adapterPosition].id, adapterPosition)
+                if (adapterPosition != -1) {
+                    listener.onProfileItemClicked(data[adapterPosition].id, adapterPosition)
+                }
             }
         }
     }
