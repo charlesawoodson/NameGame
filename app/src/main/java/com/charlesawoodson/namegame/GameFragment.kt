@@ -56,7 +56,6 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
             if (viewModel.isReverseMode()) {
                 val circularProgressDrawable = CircularProgressDrawable(requireContext())
                 circularProgressDrawable.start()
-
                 Glide.with(requireContext())
                     .load("http:${profile.headshot.url}")
                     .placeholder(circularProgressDrawable)
