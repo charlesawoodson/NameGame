@@ -29,7 +29,7 @@ class ProfileAdapter(private val listener: OnProfileItemClickListener) :
         circularProgressDrawable.start()
 
         Glide.with(holder.context)
-            .load("http:${data[position].headshot.url}")
+            .load(holder.context.getString(R.string.http_url, data[position].headshot.url))
             .placeholder(circularProgressDrawable)
             .circleCrop()
             .into(holder.profileImageView)

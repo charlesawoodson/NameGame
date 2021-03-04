@@ -77,7 +77,7 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
                     val circularProgressDrawable = CircularProgressDrawable(requireContext())
                     circularProgressDrawable.start()
                     Glide.with(requireContext())
-                        .load("http:${profile().headshot.url}")
+                        .load(getString(R.string.http_url, profile().headshot.url))
                         .placeholder(circularProgressDrawable)
                         .circleCrop()
                         .into(answerProfileImageView)
