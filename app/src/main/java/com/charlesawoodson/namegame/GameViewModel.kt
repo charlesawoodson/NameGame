@@ -152,13 +152,14 @@ class GameViewModel(
         val elapsedTime = System.nanoTime()
         setState {
             copy(
+                roundStarted = false,
                 roundCount = roundCount.plus(1),
                 correctCount = correctCount.plus(1),
                 totalTime = totalTime.plus(elapsedTime - roundStartTime),
-                roundStarted = false,
                 gameOver = availableProfiles.size == 0,
                 lastCorrect = profileAnswer(),
-                profilePicks = listOf(profileAnswer()!!) // todo: remove this
+                profileAnswer = Uninitialized,
+                profilePicks = listOf()
             )
         }
     }
@@ -177,8 +178,6 @@ class GameViewModel(
     fun isReverseMode() = reverseMode
 
     fun getAnswerId() = answerId
-
-    fun getRoundStarted() = roundStarted
 
     companion object : MvRxViewModelFactory<GameViewModel, GameState> {
 

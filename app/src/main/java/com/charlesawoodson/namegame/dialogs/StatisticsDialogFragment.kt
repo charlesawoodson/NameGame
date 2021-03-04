@@ -42,6 +42,7 @@ class StatisticsDialogFragment : BaseDialogFragment() {
         }
 
         viewModel.selectSubscribe(GameState::gameOver) { gameOver ->
+            lastCorrectAnswerContainer.isVisible = gameOver
             startButton.isGone = gameOver
             youWonTextView.isVisible = gameOver
         }

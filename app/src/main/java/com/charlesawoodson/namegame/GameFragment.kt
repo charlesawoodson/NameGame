@@ -69,23 +69,26 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
             }
         }
 
-        viewModel.asyncSubscribe(GameState::profileAnswer) { profile ->
+        viewModel.selectSubscribe(GameState::profileAnswer) { profile ->
+            answerViewContainer.isGone = profile is Uninitialized
 
-            if (viewModel.isReverseMode()) {
-                val circularProgressDrawable = CircularProgressDrawable(requireContext())
-                circularProgressDrawable.start()
-                Glide.with(requireContext())
-                    .load("http:${profile.headshot.url}")
-                    .placeholder(circularProgressDrawable)
-                    .circleCrop()
-                    .into(answerProfileImageView)
-            } else {
-                answerNameTextView.text =
-                    getString(R.string.answer_name, profile.firstName, profile.lastName)
+            if (profile is Success) {
+                if (viewModel.isReverseMode()) {
+                    val circularProgressDrawable = CircularProgressDrawable(requireContext())
+                    circularProgressDrawable.start()
+                    Glide.with(requireContext())
+                        .load("http:${profile().headshot.url}")
+                        .placeholder(circularProgressDrawable)
+                        .circleCrop()
+                        .into(answerProfileImageView)
+                } else {
+                    answerNameTextView.text =
+                        getString(R.string.answer_name, profile().firstName, profile().lastName)
+                }
+
+                answerProfileImageView.isVisible = viewModel.isReverseMode()
+                answerNameTextView.isGone = viewModel.isReverseMode()
             }
-
-            answerProfileImageView.isVisible = viewModel.isReverseMode()
-            answerNameTextView.isGone = viewModel.isReverseMode()
         }
     }
 
@@ -141,10 +144,8 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
     override fun onProfileItemClicked(profileId: String, position: Int) {
         if (profileId == viewModel.getAnswerId()) {
-            if (viewModel.getRoundStarted()) {
-                viewModel.correctAnswer()
-                StatisticsDialogFragment().show(childFragmentManager, null)
-            }
+            viewModel.correctAnswer()
+            StatisticsDialogFragment().show(childFragmentManager, null)
         } else {
             viewModel.wrongAnswer(position)
         }
