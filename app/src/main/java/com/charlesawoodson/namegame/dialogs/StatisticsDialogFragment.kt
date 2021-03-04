@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import com.airbnb.mvrx.Success
-import com.airbnb.mvrx.parentFragmentViewModel
+import com.airbnb.mvrx.activityViewModel
 import com.charlesawoodson.namegame.GameState
 import com.charlesawoodson.namegame.GameViewModel
 import com.charlesawoodson.namegame.R
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_statistics_dialog.*
 
 class StatisticsDialogFragment : BaseDialogFragment() {
 
-    private val viewModel: GameViewModel by parentFragmentViewModel()
+    private val viewModel: GameViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

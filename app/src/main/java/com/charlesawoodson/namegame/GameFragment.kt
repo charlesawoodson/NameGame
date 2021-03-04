@@ -10,10 +10,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.airbnb.mvrx.Fail
-import com.airbnb.mvrx.Loading
-import com.airbnb.mvrx.Success
-import com.airbnb.mvrx.fragmentViewModel
+import com.airbnb.mvrx.*
 import com.bumptech.glide.Glide
 import com.charlesawoodson.namegame.adapters.OnProfileItemClickListener
 import com.charlesawoodson.namegame.adapters.ProfileAdapter
@@ -24,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_game.*
 
 class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
-    private val viewModel: GameViewModel by fragmentViewModel()
+    private val viewModel: GameViewModel by activityViewModel()
 
     private val adapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProfileAdapter(this)
