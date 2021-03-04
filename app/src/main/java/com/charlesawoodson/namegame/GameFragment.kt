@@ -10,7 +10,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
+import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.fragmentViewModel
 import com.bumptech.glide.Glide
 import com.charlesawoodson.namegame.adapters.OnProfileItemClickListener
@@ -35,11 +37,28 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.selectSubscribe(GameState::profiles) { profiles ->
-            progressBar.isVisible = (profiles is Loading)
-            loadingMessageTextView.isVisible = (profiles is Loading)
+        viewModel.selectSubscribe(
+            GameState::profiles,
+            GameState::roundStarted
+        ) { profiles, roundStarted ->
+
+            progressBar.isVisible = profiles is Loading
+            messageTextView.isVisible = !roundStarted
+            retryButton.isVisible = profiles is Fail
+            startRoundButton.isVisible = profiles is Success && !roundStarted
+
+            messageContainer.isGone = roundStarted
+
+            if (profiles is Fail) {
+                messageTextView.text = getString(R.string.error_loading_data)
+            }
+
             if (profiles is Loading) {
-                StatisticsDialogFragment().show(childFragmentManager, null)
+                messageTextView.text = getString(R.string.loading_data)
+            }
+
+            if (profiles is Success) {
+                messageTextView.text = getString(R.string.begin_round_when_ready)
             }
         }
 
@@ -61,7 +80,6 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
                     .placeholder(circularProgressDrawable)
                     .circleCrop()
                     .into(answerProfileImageView)
-
             } else {
                 answerNameTextView.text =
                     getString(R.string.answer_name, profile.firstName, profile.lastName)
@@ -69,13 +87,6 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
             answerProfileImageView.isVisible = viewModel.isReverseMode()
             answerNameTextView.isGone = viewModel.isReverseMode()
-        }
-
-        viewModel.selectSubscribe(GameState::errorLoading) { errorLoading ->
-            if (errorLoading) {
-                loadingMessageTextView.setText(R.string.error_loading_data)
-                loadingMessageTextView.isVisible = errorLoading
-            }
         }
     }
 
@@ -89,6 +100,14 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        retryButton.setOnClickListener {
+            viewModel.fetchData()
+        }
+
+        startRoundButton.setOnClickListener {
+            viewModel.startRound()
+        }
 
         val orientation =
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -119,8 +138,10 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
     override fun onProfileItemClicked(profileId: String, position: Int) {
         if (profileId == viewModel.getAnswerId()) {
-            viewModel.correctAnswer()
-            StatisticsDialogFragment().show(childFragmentManager, null)
+            if (viewModel.getRoundStarted()) {
+                viewModel.correctAnswer()
+                StatisticsDialogFragment().show(childFragmentManager, null)
+            }
         } else {
             viewModel.wrongAnswer(position)
         }

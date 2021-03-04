@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 data class GameState(
-    val profiles: Async<List<Profile>> = Loading(),
+    val profiles: Async<List<Profile>> = Uninitialized,
     val profilePicks: List<Profile> = emptyList(),
     val profileAnswer: Async<Profile> = Uninitialized,
     val roundCount: Int = 0,
@@ -19,7 +19,7 @@ data class GameState(
     val totalTime: Long = 0L,
     val roundStartTime: Long = 0L,
     val hasAvailableProfiles: Async<Boolean> = Uninitialized,
-    val errorLoading: Boolean = false
+    val roundStarted: Boolean = false
 ) : MvRxState
 
 class GameViewModel(
@@ -35,9 +35,10 @@ class GameViewModel(
     private val availableProfiles = mutableSetOf<Profile>()
     private var pickedProfiles = mutableListOf<Profile>()
     private var answerId = ""
+    private var roundStarted = false
 
     init {
-        getProfiles()
+        fetchData()
 
         asyncSubscribe(GameState::profiles) { profiles ->
             if (mattMode)
@@ -54,13 +55,21 @@ class GameViewModel(
         asyncSubscribe(GameState::profileAnswer) { answer ->
             answerId = answer.id
         }
+
+        selectSubscribe(GameState::roundStarted) { started ->
+            roundStarted = started
+        }
     }
 
-    private fun getProfiles() {
+    fun fetchData() {
         willowTreeRepository.getProfiles()
             .subscribeOn(Schedulers.io())
             .subscribe(this::handleResponse, this::handleError)
             .disposeOnClear()
+
+        setState {
+            copy(profiles = Loading())
+        }
     }
 
     private fun handleResponse(profiles: List<Profile>) {
@@ -70,7 +79,6 @@ class GameViewModel(
                     it.headshot.url != "" && it.headshot.height != 0 && it.headshot.width != 0
                             && (it.firstName.isNotBlank() || it.lastName.isNotBlank())
                 }),
-                errorLoading = false,
                 hasAvailableProfiles = Success(profiles.isNotEmpty())
             )
         }
@@ -80,7 +88,6 @@ class GameViewModel(
         setState {
             copy(
                 profiles = Fail(error),
-                errorLoading = true,
                 hasAvailableProfiles = Success(false)
             )
         }
@@ -118,7 +125,8 @@ class GameViewModel(
             copy(
                 profilePicks = pickedProfiles.toList(),
                 profileAnswer = Success(correctProfile),
-                roundStartTime = roundStartTime
+                roundStartTime = roundStartTime,
+                roundStarted = true
             )
         }
     }
@@ -151,7 +159,9 @@ class GameViewModel(
                 roundCount = roundCount.plus(1),
                 correctCount = correctCount.plus(1),
                 totalTime = totalTime.plus(elapsedTime - roundStartTime),
-                hasAvailableProfiles = Success(availableProfiles.size > 0)
+                hasAvailableProfiles = Success(availableProfiles.size > 0),
+                roundStarted = false,
+                profilePicks = listOf(profileAnswer()!!) // todo: remove this
             )
         }
     }
@@ -170,6 +180,8 @@ class GameViewModel(
     fun isReverseMode() = reverseMode
 
     fun getAnswerId() = answerId
+
+    fun getRoundStarted() = roundStarted
 
     companion object : MvRxViewModelFactory<GameViewModel, GameState> {
 

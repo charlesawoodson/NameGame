@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="casual"
-        app:layout_constraintBottom_toTopOf="@+id/startRoundButton"
+        app:layout_constraintBottom_toTopOf="@+id/messageButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
         tools:text="Average Time: 0" />
 
     <Button
-        android:id="@+id/startRoundButton"
+        android:id="@+id/messageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/row02"

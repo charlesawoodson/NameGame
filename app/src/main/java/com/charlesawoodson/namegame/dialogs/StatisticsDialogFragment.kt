@@ -19,7 +19,6 @@ class StatisticsDialogFragment : BaseDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCancelable = false
 
         viewModel.selectSubscribe(GameState::correctCount) {
             correctCount.text = getString(R.string.correct_count, it)
@@ -38,21 +37,15 @@ class StatisticsDialogFragment : BaseDialogFragment() {
 
         viewModel.asyncSubscribe(GameState::hasAvailableProfiles) { hasProfiles ->
             if (hasProfiles) {
-                startRoundButton.text = getString(R.string.start_round)
+                messageButton.text = getString(R.string.start_round)
             } else {
-                startRoundButton.text = getString(R.string.end_game)
+                messageButton.text = getString(R.string.end_game)
             }
             youWonTextView.isGone = hasProfiles
         }
 
         viewModel.selectSubscribe(GameState::profiles) { profiles ->
-            startRoundButton.isClickable = profiles is Success
-        }
-
-        viewModel.selectSubscribe(GameState::errorLoading) { errorLoading ->
-            if (errorLoading) {
-                dismiss()
-            }
+            messageButton.isClickable = profiles is Success
         }
     }
 
@@ -67,7 +60,7 @@ class StatisticsDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startRoundButton.setOnClickListener {
+        messageButton.setOnClickListener {
             if (viewModel.getAvailableSize() > 0) {
                 viewModel.startRound()
             } else {
