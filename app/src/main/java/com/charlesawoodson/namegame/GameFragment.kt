@@ -36,13 +36,15 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
         viewModel.selectSubscribe(
             GameState::profiles,
-            GameState::roundStarted
-        ) { profiles, roundStarted ->
+            GameState::roundStarted,
+            GameState::gameOver
+        ) { profiles, roundStarted, gameOver ->
 
             progressBar.isVisible = profiles is Loading
-            messageTextView.isVisible = !roundStarted
+            messageTextView.isVisible = !roundStarted || gameOver
             retryButton.isVisible = profiles is Fail
-            startRoundButton.isVisible = profiles is Success && !roundStarted
+            startRoundButton.isVisible = profiles is Success && !roundStarted && !gameOver
+            playAgainButton.isVisible = gameOver
 
             messageContainer.isGone = roundStarted
 
@@ -54,8 +56,8 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
                 messageTextView.text = getString(R.string.loading_data)
             }
 
-            if (profiles is Success) {
-                messageTextView.text = getString(R.string.begin_round_when_ready)
+            if (profiles is Success || gameOver) {
+                messageTextView.text = getString(R.string.tap_when_ready)
             }
         }
 
@@ -104,6 +106,10 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
         startRoundButton.setOnClickListener {
             viewModel.startRound()
+        }
+
+        playAgainButton.setOnClickListener {
+            viewModel.fetchData()
         }
 
         val orientation =

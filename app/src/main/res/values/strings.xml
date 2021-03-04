@@ -32,8 +32,9 @@
     <string name="you_won">You Won!!</string>
     <string name="error_loading_data">There was an error loading the data… check your internet then try again</string>
     <string name="loading_data">Loading Data…</string>
-    <string name="begin_round_when_ready">Begin round when ready</string>
+    <string name="tap_when_ready">Tap when ready</string>
     <string name="retry">Retry</string>
     <string name="restart_game">Restart Game</string>
+    <string name="play_again">Play Again</string>
 
 </resources>

@@ -1,42 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/youWonTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/row02"
         android:fontFamily="serif"
         android:text="@string/you_won"
         android:textSize="@dimen/subhead3"
         android:textStyle="bold|italic"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
     <TextView
         android:id="@+id/roundCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/row02"
         android:fontFamily="casual"
-        app:layout_constraintBottom_toTopOf="@+id/correctCount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/youWonTextView"
         tools:text="Rounds Played: 0" />
 
     <TextView
         android:id="@+id/correctCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:fontFamily="casual"
         app:layout_constraintBottom_toTopOf="@+id/incorrectCount"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +45,7 @@
         android:id="@+id/incorrectCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:fontFamily="casual"
         app:layout_constraintBottom_toTopOf="@+id/averageTime"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,18 +58,56 @@
         android:id="@+id/averageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/row02"
         android:fontFamily="casual"
-        app:layout_constraintBottom_toTopOf="@+id/messageButton"
+        app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/incorrectCount"
         tools:text="Average Time: 0" />
 
-    <Button
-        android:id="@+id/messageButton"
+    <LinearLayout
+        android:id="@+id/lastCorrectAnswerContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginBottom="@dimen/row01"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/answerProfileImageView"
+            android:layout_width="@dimen/row08"
+            android:layout_height="@dimen/row08"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:visibility="visible"
+            tools:srcCompat="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/answerNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/row01"
+            android:fontFamily="casual"
+            android:textSize="@dimen/caption7"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:text="Charles Woodson"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginBottom="@dimen/row02"
         android:text="@string/start_round"
         android:textAllCaps="false"
@@ -81,4 +116,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

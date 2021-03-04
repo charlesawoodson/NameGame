@@ -13,13 +13,14 @@ data class GameState(
     val profiles: Async<List<Profile>> = Uninitialized,
     val profilePicks: List<Profile> = emptyList(),
     val profileAnswer: Async<Profile> = Uninitialized,
+    val lastCorrect: Profile? = null,
     val roundCount: Int = 0,
     val correctCount: Int = 0,
     val incorrectCount: Int = 0,
     val totalTime: Long = 0L,
     val roundStartTime: Long = 0L,
-    val hasAvailableProfiles: Async<Boolean> = Uninitialized,
-    val roundStarted: Boolean = false
+    val roundStarted: Boolean = false,
+    val gameOver: Boolean = false
 ) : MvRxState
 
 class GameViewModel(
@@ -29,8 +30,7 @@ class GameViewModel(
     private val challengeMode: Boolean,
     private val reverseMode: Boolean,
     private val hintMode: Boolean
-) :
-    BaseMvRxViewModel<GameState>(initialState, true) {
+) : BaseMvRxViewModel<GameState>(initialState, true) {
 
     private val availableProfiles = mutableSetOf<Profile>()
     private var pickedProfiles = mutableListOf<Profile>()
@@ -68,7 +68,7 @@ class GameViewModel(
             .disposeOnClear()
 
         setState {
-            copy(profiles = Loading())
+            copy(profiles = Loading(), gameOver = false)
         }
     }
 
@@ -78,18 +78,14 @@ class GameViewModel(
                 profiles = Success(profiles.filter {
                     it.headshot.url != "" && it.headshot.height != 0 && it.headshot.width != 0
                             && (it.firstName.isNotBlank() || it.lastName.isNotBlank())
-                }),
-                hasAvailableProfiles = Success(profiles.isNotEmpty())
+                })
             )
         }
     }
 
     private fun handleError(error: Throwable) {
         setState {
-            copy(
-                profiles = Fail(error),
-                hasAvailableProfiles = Success(false)
-            )
+            copy(profiles = Fail(error))
         }
     }
 
@@ -159,8 +155,9 @@ class GameViewModel(
                 roundCount = roundCount.plus(1),
                 correctCount = correctCount.plus(1),
                 totalTime = totalTime.plus(elapsedTime - roundStartTime),
-                hasAvailableProfiles = Success(availableProfiles.size > 0),
                 roundStarted = false,
+                gameOver = availableProfiles.size == 0,
+                lastCorrect = profileAnswer(),
                 profilePicks = listOf(profileAnswer()!!) // todo: remove this
             )
         }
