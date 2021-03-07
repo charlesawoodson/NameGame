@@ -125,13 +125,13 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         val spanCount =
             when {
                 viewModel.isReverseMode() && orientation == RecyclerView.HORIZONTAL -> {
-                    3
+                    SPAN_COUNT_THREE
                 }
                 !viewModel.isReverseMode() && orientation == RecyclerView.VERTICAL -> {
-                    3
+                    SPAN_COUNT_THREE
                 }
                 else -> {
-                    2
+                    SPAN_COUNT_TWO
                 }
             }
 
@@ -149,5 +149,10 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         } else {
             viewModel.wrongAnswer(position)
         }
+    }
+
+    companion object {
+        private const val SPAN_COUNT_THREE = 3
+        private const val SPAN_COUNT_TWO = 2
     }
 }
