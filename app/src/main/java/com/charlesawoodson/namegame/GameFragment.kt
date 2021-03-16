@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_game.*
 
 class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
-    private val viewModel: GameViewModel by activityViewModel()
+    private val viewModel: GameViewModel by fragmentViewModel()
 
     private val adapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProfileAdapter(this)
@@ -158,6 +158,18 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         } else {
             viewModel.wrongAnswer(position)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     companion object {
