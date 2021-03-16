@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.charlesawoodson.namegame.dialogs.StatisticsDialogFragment
 import com.charlesawoodson.namegame.settings.SettingsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -29,24 +27,12 @@ class MainActivity : AppCompatActivity() {
         return super.onSupportNavigateUp()
     }
 
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStackImmediate()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.action_statistics -> {
-            StatisticsDialogFragment().show(supportFragmentManager, null)
-            true
-        }
         R.id.action_begin_game -> {
             addGameFragment()
             true

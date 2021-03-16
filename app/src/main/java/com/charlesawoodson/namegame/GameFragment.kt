@@ -2,10 +2,7 @@ package com.charlesawoodson.namegame
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -151,6 +148,18 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         super.onPrepareOptionsMenu(menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_statistics -> {
+                StatisticsDialogFragment().show(childFragmentManager, null)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onProfileItemClicked(profileId: String, position: Int) {
         if (profileId == viewModel.getAnswerId()) {
             viewModel.correctAnswer()
@@ -158,18 +167,6 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         } else {
             viewModel.wrongAnswer(position)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     companion object {

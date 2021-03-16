@@ -8,21 +8,17 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.airbnb.mvrx.Success
-import com.airbnb.mvrx.activityViewModel
-import com.airbnb.mvrx.fragmentViewModel
+import com.airbnb.mvrx.parentFragmentViewModel
 import com.bumptech.glide.Glide
 import com.charlesawoodson.namegame.GameState
 import com.charlesawoodson.namegame.GameViewModel
 import com.charlesawoodson.namegame.R
 import com.charlesawoodson.namegame.bases.BaseDialogFragment
-import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.fragment_statistics_dialog.*
-import kotlinx.android.synthetic.main.fragment_statistics_dialog.answerNameTextView
-import kotlinx.android.synthetic.main.fragment_statistics_dialog.answerProfileImageView
 
 class StatisticsDialogFragment : BaseDialogFragment() {
 
-    private val viewModel: GameViewModel by fragmentViewModel()
+    private val viewModel: GameViewModel by parentFragmentViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
