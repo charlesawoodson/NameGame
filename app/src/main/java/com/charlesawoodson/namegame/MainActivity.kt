@@ -4,19 +4,21 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.charlesawoodson.namegame.dialogs.StatisticsDialogFragment
+import com.charlesawoodson.namegame.settings.SettingsFragment
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setSupportActionBar(toolbar)
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                add<GameFragment>(R.id.container)
+                replace<SettingsFragment>(R.id.container)
             }
         }
     }
@@ -36,8 +38,20 @@ class MainActivity : AppCompatActivity() {
             StatisticsDialogFragment().show(supportFragmentManager, null)
             true
         }
+        R.id.action_begin_game -> {
+            addGameFragment()
+            true
+        }
         else -> {
             super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun addGameFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            addToBackStack(null)
+            replace<GameFragment>(R.id.container)
         }
     }
 

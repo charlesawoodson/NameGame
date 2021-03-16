@@ -3,6 +3,7 @@ package com.charlesawoodson.namegame
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
@@ -97,6 +98,7 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
 
@@ -140,6 +142,13 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
 
         profilesRecyclerView.adapter =
             if (viewModel.isReverseMode()) reverseModeAdapter else adapter
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        (activity as MainActivity).supportActionBar?.title = getString(R.string.app_name)
+        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        menu.findItem(R.id.action_begin_game).isVisible = false
+        super.onPrepareOptionsMenu(menu)
     }
 
     override fun onProfileItemClicked(profileId: String, position: Int) {

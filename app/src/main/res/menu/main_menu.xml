@@ -3,9 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_begin_game"
+        android:title="@string/begin_game"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_statistics"
         android:icon="@drawable/ic_baseline_info_24"
         android:title=""
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>
