@@ -22,11 +22,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -48,6 +43,11 @@ class MainActivity : AppCompatActivity() {
             addToBackStack(null)
             replace<GameFragment>(R.id.container, null)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
 }
