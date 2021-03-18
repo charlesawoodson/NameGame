@@ -3,6 +3,7 @@ package com.charlesawoodson.namegame
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -73,6 +74,9 @@ class GameFragment : BaseFragment(), OnProfileItemClickListener {
             if (profile is Success) {
                 if (viewModel.isReverseMode()) {
                     val circularProgressDrawable = CircularProgressDrawable(requireContext())
+                    circularProgressDrawable.setColorSchemeColors(
+                        ContextCompat.getColor(requireContext(), R.color.purple_200)
+                    )
                     circularProgressDrawable.start()
                     Glide.with(requireContext())
                         .load(getString(R.string.http_url, profile().headshot.url))

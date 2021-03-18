@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -52,6 +53,9 @@ class StatisticsDialogFragment : BaseDialogFragment() {
             lastCorrectAnswerContainer.isVisible = profile != null
             profile?.also {
                 val circularProgressDrawable = CircularProgressDrawable(requireContext())
+                circularProgressDrawable.setColorSchemeColors(
+                    ContextCompat.getColor(requireContext(), R.color.purple_200)
+                )
                 circularProgressDrawable.start()
 
                 Glide.with(requireContext())

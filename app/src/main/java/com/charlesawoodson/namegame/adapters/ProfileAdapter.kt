@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -26,6 +27,12 @@ class ProfileAdapter(private val listener: OnProfileItemClickListener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val circularProgressDrawable = CircularProgressDrawable(holder.context)
+        circularProgressDrawable.setColorSchemeColors(
+            ContextCompat.getColor(
+                holder.context,
+                R.color.purple_200
+            )
+        )
         circularProgressDrawable.start()
 
         Glide.with(holder.context)
